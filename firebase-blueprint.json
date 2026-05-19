@@ -1,0 +1,58 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User account information",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "email"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Streetwear clothing item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "category": { "type": "string", "enum": ["Hoodies", "T-Shirts", "Custom Wear"] },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "sizes": { "type": "array", "items": { "type": "string" } },
+        "colors": { "type": "array", "items": { "type": "string" } },
+        "stock": { "type": "integer" }
+      }
+    },
+    "CartItem": {
+      "title": "Cart Item",
+      "description": "Item in user cart",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "quantity": { "type": "integer" },
+        "size": { "type": "string" },
+        "color": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/products": {
+      "schema": "Product",
+      "description": "Store-wide products"
+    },
+    "/users/{userId}/profile": {
+      "schema": "User",
+      "description": "User profile data"
+    },
+    "/users/{userId}/cart": {
+      "schema": "CartItem",
+      "description": "User shopping cart"
+    }
+  }
+}
