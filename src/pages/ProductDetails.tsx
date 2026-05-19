@@ -1,8 +1,8 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { PRODUCTS } from '../constants';
-import { ArrowLeft, Heart, ShoppingBag, ChevronRight, Star } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowLeft, Heart, ShoppingBag, ChevronRight, Star, Sparkles } from 'lucide-react';
+import { useState, type ReactNode } from 'react';
 import { cn } from '../lib/utils';
 
 export default function ProductDetails() {
@@ -11,8 +11,18 @@ export default function ProductDetails() {
   const product = PRODUCTS.find((p) => p.id === id);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
+  const [isAdded, setIsAdded] = useState(false);
 
   if (!product) return <div className="p-20 text-center uppercase font-black italic">Item Lost In The Void</div>;
+
+  const handleAddToBag = () => {
+    if (!selectedSize || !selectedColor) {
+      alert('Please select size and colorway');
+      return;
+    }
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2000);
+  };
 
   return (
     <div className="pb-32">
@@ -111,27 +121,97 @@ export default function ProductDetails() {
           
           {/* Guide/Detail Links */}
           <div className="space-y-2 mb-10">
-            <button className="w-full flex items-center justify-between p-4 bg-zinc-900 rounded-2xl group">
-              <span className="text-[10px] font-bold uppercase tracking-widest">Sizing Guide</span>
-              <ChevronRight size={16} className="text-white/20 group-hover:text-white transition-colors" />
-            </button>
-            <button className="w-full flex items-center justify-between p-4 bg-zinc-900 rounded-2xl group">
-              <span className="text-[10px] font-bold uppercase tracking-widest">Materials & Tech</span>
-              <ChevronRight size={16} className="text-white/20 group-hover:text-white transition-colors" />
-            </button>
+            <Drawer 
+              title="Sizing Guide" 
+              content={
+                <div className="space-y-6">
+                  <p className="text-zinc-400 text-sm italic">Our pieces are designed with a deliberate oversized "modular" fit. For a true streetwear silhouette, stay with your normal size.</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                      <p className="text-[10px] font-black uppercase text-[#FFD700] mb-1">Chest</p>
+                      <p className="text-xl font-black italic">62-68CM</p>
+                    </div>
+                    <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                      <p className="text-[10px] font-black uppercase text-[#FFD700] mb-1">Length</p>
+                      <p className="text-xl font-black italic">70-74CM</p>
+                    </div>
+                  </div>
+                </div>
+              } 
+            />
+            <Drawer 
+              title="Materials & Tech" 
+              content={
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-[#FFD700]/10 rounded-xl flex items-center justify-center text-[#FFD700]">100%</div>
+                    <p className="text-sm font-bold uppercase italic">Heavyweight French Terry Cotton</p>
+                  </div>
+                  <p className="text-zinc-400 text-xs leading-relaxed">
+                    Utilizing a unique 480GSM weave, our "Bodwé-Tech" fabric provides structural integrity while maintaining a soft, breathable interior. Reinforced seams with gold-bonded thread for durability.
+                  </p>
+                </div>
+              } 
+            />
           </div>
         </motion.div>
       </section>
 
       {/* Action Bar */}
-      <footer className="fixed bottom-0 left-0 right-0 z-50 p-6 bg-black/80 backdrop-blur-xl border-t border-white/10">
-        <div className="max-w-lg mx-auto flex gap-4">
-          <button className="flex-1 bg-white text-black h-16 rounded-[24px] font-black uppercase italic tracking-tighter flex items-center justify-center gap-3 hover:bg-[#FFD700] transition-all transform hover:scale-[1.02] active:scale-[0.98]">
-            <ShoppingBag size={24} strokeWidth={2.5} />
-            Add To Bag
+      <footer className="fixed bottom-0 left-0 right-0 z-50 p-6 bg-black/80 backdrop-blur-xl border-t border-white/10 pb-safe">
+        <div className="max-w-lg mx-auto">
+          <button 
+            onClick={handleAddToBag}
+            className={cn(
+              "w-full h-16 rounded-[24px] font-black uppercase italic tracking-tighter flex items-center justify-center gap-3 transition-all transform active:scale-95",
+              isAdded ? "bg-[#FFD700] text-black" : "bg-white text-black hover:bg-[#FFD700]"
+            )}
+          >
+            {isAdded ? (
+              <>
+                <Sparkles size={24} fill="currentColor" />
+                Added To Bag
+              </>
+            ) : (
+              <>
+                <ShoppingBag size={24} strokeWidth={2.5} />
+                Add To Bag
+              </>
+            )}
           </button>
         </div>
+        {/* iPhone Style Home Bar */}
+        <div className="w-32 h-1 bg-white/10 mx-auto mt-4 rounded-full" />
       </footer>
+    </div>
+  );
+}
+
+function Drawer({ title, content }: { title: string, content: ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="bg-zinc-950 border border-white/5 rounded-2xl overflow-hidden">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between p-5 hover:bg-white/5 transition-colors group"
+      >
+        <span className="text-[10px] font-black uppercase tracking-[0.2em] italic">{title}</span>
+        <ChevronRight size={18} className={cn("text-white/20 transition-transform duration-300", isOpen && "rotate-90 text-[#FFD700]")} />
+      </button>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="p-6 pt-0 border-t border-white/5">
+              {content}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

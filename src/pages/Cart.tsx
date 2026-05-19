@@ -2,9 +2,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { PRODUCTS } from '../constants';
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Cart() {
+  const navigate = useNavigate();
   // Mock cart items initially
   const [items, setItems] = useState([
     { ...PRODUCTS[0], quantity: 1, selectedSize: 'L', selectedColor: 'Jet Black' },
@@ -108,12 +109,17 @@ export default function Cart() {
       </section>
 
       {/* Checkout Action */}
-      <footer className="fixed bottom-0 left-0 right-0 z-50 p-6 bg-black/80 backdrop-blur-xl border-t border-white/10">
-        <div className="max-w-lg mx-auto flex gap-4">
-          <button className="flex-1 bg-white text-black h-16 rounded-[24px] font-black uppercase italic tracking-tighter flex items-center justify-between px-8 hover:bg-[#FFD700] transition-all transform hover:scale-[1.02] active:scale-[0.98]">
+      <footer className="fixed bottom-0 left-0 right-0 z-50 p-6 bg-black/80 backdrop-blur-xl border-t border-white/10 pb-safe">
+        <div className="max-w-lg mx-auto">
+          <button 
+            onClick={() => navigate('/checkout')}
+            className="w-full h-16 bg-white text-black rounded-[24px] font-black uppercase italic tracking-tighter flex items-center justify-between px-8 hover:bg-[#FFD700] transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+          >
             Secure Checkout
             <ArrowRight size={24} strokeWidth={2.5} />
           </button>
+          {/* iPhone Style Home Bar */}
+          <div className="w-32 h-1 bg-white/10 mx-auto mt-4 rounded-full" />
         </div>
       </footer>
     </div>

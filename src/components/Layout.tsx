@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 
 export default function Layout() {
   const location = useLocation();
+  const hideNavbar = location.pathname.startsWith('/product/') || location.pathname === '/auth';
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-[#FFD700] selection:text-black overflow-hidden relative">
@@ -24,7 +25,7 @@ export default function Layout() {
             <Outlet />
           </motion.div>
         </AnimatePresence>
-        <Navbar />
+        {!hideNavbar && <Navbar />}
       </div>
     </div>
   );

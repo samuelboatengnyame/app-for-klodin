@@ -8,6 +8,7 @@ import Profile from './pages/Profile';
 import ProductDetails from './pages/ProductDetails';
 import SplashScreen from './components/SplashScreen';
 import Auth from './pages/Auth';
+import Checkout from './pages/Checkout';
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
       <SplashScreen />
       <Routes>
         <Route path="/auth" element={<Auth />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="search" element={<Search />} />
